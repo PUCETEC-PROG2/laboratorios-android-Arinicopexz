@@ -1,48 +1,65 @@
 package ec.edu.puce.githubclient.ui.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.materialIcon
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import ec.edu.puce.githubclient.models.GithubUser
+import ec.edu.puce.githubclient.models.Repository
 import ec.edu.puce.githubclient.ui.components.RepoItem
+import ec.edu.puce.githubclient.viewmodels.RepoListViewModel
 
 @Preview(showBackground = true)
 @Composable
 fun RepoList(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: RepoListViewModel = viewModel()
+
 ) {
-    Column (
+    Box (
         modifier = modifier
     ) {
-        RepoItem(
-            name = "Repositorio de Android",
-            description = "Repositorio creado en kotlin",
-            avatarUrl = "https://marketing4ecommerce.co/wp-content/uploads/2019/09/imagen-vectorial-compressor.jpg",
-            language = "Kotlin"
+        val repos by viewModel.repos.collectAsState()
+        val isLoading by viewModel.isloading.collectAsState()
+        val errMsg by viewModel.errMsg.collectAsState()
+    }
+    Box(
+        modifier = modifier
+    ){
+        if(isLoading)
+            CircularProgressIndicator(
+                modifier = Modifier.align (Alignment.Center)
+            )
+    }
+
+    errMsg?.let{
+        Text(
+            text = it,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding( all= 16.dp)
         )
-        RepoItem(
-            name = "Repositorio de Android",
-            description = "Repositorio creado en kotlin",
-            avatarUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjALFFJ_6U9dRONxmPrrjcmDSqAAzQnZ5evQ&s",
-            language = "Python"
-        )
-        RepoItem(
-            name = "Repositorio de Android",
-            description = "Repositorio creado en kotlin",
-            avatarUrl = "https://img.freepik.com/fotos-premium/patron-rayos-solares-radiantes-colores-negrita-imagen-fondo-patron-papel-pared-patron_1020697-727366.jpg?semt=ais_hybrid&w=740&q=80",
-            language = "C++"
-        )
-        RepoItem(
-            name = "Repositorio de Android",
-            description = "Repositorio creado en kotlin",
-            avatarUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDbxcSwXhWTETr7a-bPWWEA2DHEcvEgOa4jQ&s",
-            language = "Ruby"
-        )
-        RepoItem(
-            name = "Repositorio de Android",
-            description = "Repositorio creado en kotlin",
-            avatarUrl = "https://images.unsplash.com/photo-1689308271305-58e75832289b?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-            language = "Javascipt"
-        )
+    }
+
+    if(!isLoading && errMsg ! = null) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+
+
+
     }
 }
