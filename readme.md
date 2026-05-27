@@ -1,7 +1,7 @@
 # Laboratorio Android. Cliente de GitHub
 
 ## Datos del estudiante
-- Jordan Castillo
+- Ariel Rosero
 - Pucetec - Desarrollo de Software
 - Paralelo 2
 
