@@ -18,26 +18,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import ec.edu.puce.githubclient.models.GithubUser
-import ec.edu.puce.githubclient.models.Repository
+import ec.edu.puce.githubclient.Models.GithubUser
+import ec.edu.puce.githubclient.Models.Repository
+import ec.edu.puce.githubclient.ui.theme.GithubClientTheme
 
 @Composable
-fun RepoItem(repository: Repository) {
-    Card(
+fun RepoItem (
+    repository: Repository
+) {
+    Card (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(all = 8.dp)
-    ) {
-        Row(
+            .padding(8.dp)
+    ){
+        Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = 16.dp)
-        ) {
+                .padding(16.dp)
+        ){
             AsyncImage(
-                // Asegúrate de que 'owner' y 'avatarUrl' no sean nulos en tu modelo
                 model = repository.owner.avatarUrl,
-                contentDescription = "Imagen de repositorio \"${repository.name}\"",
-                modifier = Modifier.size(68.dp),
+                contentDescription = "Imagen de \"${repository.name}\"",
+                modifier = Modifier.size(size = 60.dp),
                 contentScale = ContentScale.Crop
             )
 
@@ -50,18 +52,17 @@ fun RepoItem(repository: Repository) {
                     fontWeight = FontWeight.Bold
                 )
 
-                // Corregido: Se accede mediante 'repository.'
-                if (!repository.description.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.height(height = 4.dp))
+                Spacer(modifier = Modifier.height(height = 4.dp))
+
+                if (!repository.description.isNullOrEmpty()) {
                     Text(
                         text = repository.description,
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
+                Spacer(modifier = Modifier.height(height = 4.dp))
 
-                // Corregido: Se accede mediante 'repository.'
-                if (!repository.language.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.height(height = 4.dp))
+                if (!repository.language.isNullOrEmpty()) {
                     Text(
                         text = repository.language,
                         style = MaterialTheme.typography.labelSmall,
@@ -74,18 +75,19 @@ fun RepoItem(repository: Repository) {
 
 @Preview(showBackground = true)
 @Composable
-fun RepoItemPreview() {
-    // Nota: Ajustolos parámetros de Repository y Owner según cómo estén definidos exactamente en tus modelos.
-    val repository = Repository(
-        id = "12312414",
-        name = "Nombre del repositorio",
-        description = "Descripción del repositorio",
-        language = "Kotlin",
-        owner = GithubUser(
-            id="213123",
-            login = "arielroserotoscano",
-            avatarUrl = "https://avatars.githubusercontent.com/u/48026030?v=4"
+fun RepoItemPreview () {
+    GithubClientTheme {
+        val repository = Repository(
+            id = "12312414",
+            name = "Nombre del repositorio",
+            description = "Descripcion del repositorio",
+            language = "Kotlin",
+            owner = GithubUser(
+                id = "213123",
+                login = "pabloperezmartinez",
+                avatarUrl = "https://avatars.githubusercontent.com/u/48026030?v=4"
+            )
         )
-    )
-    RepoItem(repository)
+        RepoItem(repository)
+    }
 }

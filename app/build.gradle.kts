@@ -7,7 +7,6 @@ plugins {
 }
 
 android {
-
     namespace = "ec.edu.puce.githubclient"
     compileSdk = 36 // Cambiado a 35 por estabilidad actual
 
@@ -82,4 +81,3 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.google.code.gson:gson:2.10.1")
 }
-//recoge archivo desde localproperties, donde guarda token, configuara el build config, cambia la versión de java 11-17, cambia el jdk y target para que sea compartido, la iportacion del view model ayuda a vistas, lo de retrofit llama http, y implementation, deserializa
