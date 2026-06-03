@@ -1,7 +1,7 @@
 package ec.edu.puce.githubclient.services
 
 import ec.edu.puce.githubclient.Models.Repository
-import ec.edu.puce.githubclient.models.RepositoryPayload
+import ec.edu.puce.githubclient.Models.RepositoryPayload
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -16,9 +16,9 @@ interface ApiService {
                 @Query(value = "per_page") perPage: Int = 100,
                 @Query(value = "t") t: String = "${System.currentTimeMillis()}",
     ): List<Repository>
-}
 
-    @POST( value =  "/user/repos")
+    @POST (value = "/user/repos")
     suspend fun createRepository (
         @Body repository: RepositoryPayload
     ): Repository
+}

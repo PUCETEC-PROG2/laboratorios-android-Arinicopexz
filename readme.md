@@ -1,7 +1,7 @@
 # Laboratorio Android. Cliente de GitHub
 
 ## Datos del estudiante
-- Ariel Rosero
+- Ariel Rosero Toscano
 - Pucetec - Desarrollo de Software
 - Paralelo 2
 

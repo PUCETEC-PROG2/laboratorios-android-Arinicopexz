@@ -39,7 +39,7 @@ fun RepoList(
     Scaffold (
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = onNavigateToForm,
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -91,3 +91,4 @@ fun RepoListPreview () {
         RepoList()
     }
 }
+

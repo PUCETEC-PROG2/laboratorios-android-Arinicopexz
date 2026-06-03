@@ -1,6 +1,6 @@
-package ec.edu.puce.githubclient.models
+package ec.edu.puce.githubclient.Models
 
-class RepositoryPayload {
+data class RepositoryPayload(
     val name: String,
     val description: String?,
-}
+)

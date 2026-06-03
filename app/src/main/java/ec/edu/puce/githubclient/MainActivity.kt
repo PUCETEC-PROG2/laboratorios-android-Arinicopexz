@@ -8,9 +8,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ec.edu.puce.githubclient.ui.screens.RepoForm
 import ec.edu.puce.githubclient.ui.screens.RepoList
 import ec.edu.puce.githubclient.ui.theme.GithubClientTheme
+import ec.edu.puce.githubclient.viewmodels.RepoFormViewModel
+import ec.edu.puce.githubclient.viewmodels.RepoListViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,19 +21,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GithubClientTheme {
-                var currentScreen by remember { mutableStateOf(value = "repoList") }
-                when (currentScreen) {
-                    "repolist"->RepoList(
-                        onNavigateToForm = {currentScreen = "repoForm"}
-                    )
-                    "repoForm"-> RepoForm(
-                        onBackClick = {currentScreen="repoList"}
-                    )
-                }
-                    RepoList()
-                }
+                    var currentScreen by remember { mutableStateOf(value = "repoList") }
+                    val listViewModel: RepoListViewModel = viewModel()
+                    val formViewModel: RepoFormViewModel = viewModel()
+
+                    when (currentScreen) {
+                        "repoList" -> RepoList (
+                            onNavigateToForm = { currentScreen = "repoForm" }
+                        )
+                        "repoForm" -> RepoForm(
+                            onBackClick = {
+                                formViewModel.resetError()
+                                currentScreen = "repoList"
+                                          },
+                            onSaveSuccess = {
+                                listViewModel.fetchRepos()
+                                currentScreen = "repoList"
+                            }
+
+                        )
+                    }
             }
         }
     }
-
+}
 
