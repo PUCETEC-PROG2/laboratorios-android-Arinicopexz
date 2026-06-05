@@ -1,17 +1,11 @@
 package ec.edu.puce.githubclient.ui.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -24,8 +18,16 @@ import ec.edu.puce.githubclient.ui.theme.GithubClientTheme
 
 @Composable
 fun RepoItem (
-    repository: Repository
+    repository: Repository,
+    onUpdate: (String, String) -> Unit,   // <- NUEVO: Función para enviar los cambios
+    onDelete: () -> Unit                  // <- NUEVO: Función para avisar que se elimina
 ) {
+    // --- ESTADOS PARA LOS DIÁLOGOS Y TEXTOS (NUEVO) ---
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    var newName by remember { mutableStateOf(repository.name) }
+    var newDescription by remember { mutableStateOf(repository.description ?: "") }
+
     Card (
         modifier = Modifier
             .fillMaxWidth()
@@ -36,6 +38,7 @@ fun RepoItem (
                 .fillMaxWidth()
                 .padding(16.dp)
         ){
+            // 1. Tu imagen original de Coil
             AsyncImage(
                 model = repository.owner.avatarUrl,
                 contentDescription = "Imagen de \"${repository.name}\"",
@@ -45,7 +48,10 @@ fun RepoItem (
 
             Spacer(modifier = Modifier.width(width = 16.dp))
 
-            Column {
+            // 2. Columna con tus textos originales
+            // NOTA: Le agregué modifier = Modifier.weight(1f) para que los textos
+            // ocupen el espacio disponible y empujen los botones hacia la derecha.
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = repository.name,
                     style = MaterialTheme.typography.titleMedium,
@@ -69,7 +75,75 @@ fun RepoItem (
                     )
                 }
             }
+
+            // 3. Los botones de acción (NUEVO)
+            Row {
+                IconButton(onClick = { showEditDialog = true }) {
+                    Icon(Icons.Default.Edit, contentDescription = "Editar")
+                }
+                IconButton(onClick = { showDeleteDialog = true }) {
+                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
+                }
+            }
         }
+    }
+
+    // --- DIÁLOGO DE CONFIRMACIÓN PARA ELIMINAR (NUEVO) ---
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("¿Eliminar repositorio?") },
+            text = { Text("Esta acción no se puede deshacer. ¿Seguro que quieres eliminar '${repository.name}'?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onDelete()
+                    showDeleteDialog = false
+                }) {
+                    Text("Eliminar", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
+
+    // --- DIÁLOGO PARA EDITAR (NUEVO) ---
+    if (showEditDialog) {
+        AlertDialog(
+            onDismissRequest = { showEditDialog = false },
+            title = { Text("Editar repositorio") },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = newName,
+                        onValueChange = { newName = it },
+                        label = { Text("Nombre") }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = newDescription,
+                        onValueChange = { newDescription = it },
+                        label = { Text("Descripción") }
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    onUpdate(newName, newDescription)
+                    showEditDialog = false
+                }) {
+                    Text("Guardar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showEditDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }
 
@@ -88,6 +162,11 @@ fun RepoItemPreview () {
                 avatarUrl = "https://avatars.githubusercontent.com/u/48026030?v=4"
             )
         )
-        RepoItem(repository)
+        // Actualizamos el Preview para que no dé error con las nuevas funciones
+        RepoItem(
+            repository = repository,
+            onUpdate = { _, _ -> },
+            onDelete = {}
+        )
     }
 }

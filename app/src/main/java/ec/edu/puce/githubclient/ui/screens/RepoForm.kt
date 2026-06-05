@@ -66,7 +66,7 @@ fun RepoForm(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Formulario as repositorio") },
+                title = { Text(text = "Formulario de repositorio") },
             navigationIcon = {
                 IconButton(onClick = onBackClick) {
                     Icon(

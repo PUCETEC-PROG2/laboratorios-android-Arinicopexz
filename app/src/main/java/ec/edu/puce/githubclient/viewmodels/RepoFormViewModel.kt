@@ -26,9 +26,13 @@ class RepoFormViewModel: ViewModel() {
                     val repositoryBody = RepositoryPayload(name, description)
                     RetrofitClient.apiService.createRepository(repository = repositoryBody)
                     _isLoading.value = true
-                } catch (e: Exception) {
-                    _isSuccess.value = false
-                    _errorMsg.value = "Error al crear repositorio: ${e.localizedMessage}"
+                } catch (e: retrofit2.HttpException) {
+                    val errorBody = e.response()?.errorBody()?.string()
+                    _errorMsg.value = when (e.code()) {
+                        422 -> "Ya existe un repositorio con ese nombre"
+                        401 -> "No autorizado, revisá tu token"
+                        else -> "Error ${e.code()}: $errorBody"
+                    }
                 } finally {
                     _isLoading.value = false
                 }

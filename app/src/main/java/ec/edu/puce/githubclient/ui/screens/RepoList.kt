@@ -71,15 +71,36 @@ fun RepoList(
                         .padding(all = 16.dp)
                 )
             }
+
+            // --- CÓDIGO CORREGIDO  ---
             if (!isLoading && errMsg == null) {
                 LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     items(count = repos.size) { i ->
-                        RepoItem(repository = repos[i])
+                        val currentRepo = repos[i]
+
+                        RepoItem(
+                            repository = currentRepo,
+                            onUpdate = { newName, newDescription ->
+                                viewModel.updateRepo(
+                                    owner = currentRepo.owner.login,
+                                    repoName = currentRepo.name,
+                                    newName = newName,
+                                    newDescription = newDescription
+                                )
+                            },
+                            onDelete = {
+                                viewModel.deleteRepo(
+                                    owner = currentRepo.owner.login,
+                                    repoName = currentRepo.name
+                                )
+                            }
+                        )
                     }
                 }
             }
+            // -------------------------------------------------------------
         }
     }
 }
@@ -91,4 +112,3 @@ fun RepoListPreview () {
         RepoList()
     }
 }
-
